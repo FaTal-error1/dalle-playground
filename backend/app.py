@@ -120,8 +120,8 @@ def generate_images(prompt:str, num_predictions: int):
         
   return images
 
-im1 = []
-im2 = []
+im = []
+tx = []
 
 @app.route('/dalle', methods=['POST'])
 @cross_origin()
@@ -138,10 +138,25 @@ def generate_images_api():
         img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
         generated_images.append(img_str)
         
+    im.append(generated_images)    
+    tx.append(text_prompt)
+    
     df = pd.DataFrame()
+    df['Images']=generated_image
     df.to_excel('images.xlsx')
+    
     print('generated_images :')    
     print(generated_images)
+    print('IM List :')    
+    print(im)
+    print('TX List :')    
+    print(tx)
+    
+    dt = pd.DataFrame()
+    dt['Im']=im
+    dt['Tx']=tx
+    dt.to_excel('im.xlsx')
+    
     print(f'Created {num_images} images from text prompt [{text_prompt}]')
     
     return jsonify(generated_images)
